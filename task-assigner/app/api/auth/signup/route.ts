@@ -1,27 +1,34 @@
+// app/api/auth/signup/route.ts
+
 import { connectToDatabase } from '../../../../lib/mongodb';
 import { User } from '../../../../models/User';
 import bcrypt from 'bcryptjs';
-import { NextApiRequest, NextApiResponse } from 'next';
+import { NextResponse } from 'next/server';
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method === 'POST') {
-    const { name, email, password } = req.body;
-
+export async function POST(req: Request) {
+  try {
     await connectToDatabase();
 
-    const existingUser = await User.findOne({ email });
+    const { name, email, password, role } = await req.json();
 
+    const existingUser = await User.findOne({ email });
     if (existingUser) {
-      res.status(400).json({ message: 'User already exists' });
-      return;
+      return NextResponse.json({ error: 'User already exists' }, { status: 400 });
     }
 
     const hashedPassword = await bcrypt.hash(password, 12);
-    const newUser = new User({ name, email, password: hashedPassword });
+
+    const newUser = new User({
+      name,
+      email,
+      password: hashedPassword,
+      role,
+    });
+
     await newUser.save();
 
-    res.status(201).json({ message: 'User created successfully' });
-  } else {
-    res.status(405).json({ message: 'Method not allowed' });
+    return NextResponse.json({ message: 'User created successfully' }, { status: 201 });
+  } catch (error: any) {
+    return NextResponse.json({ error: String(error.message) || 'Something went wrong' }, { status: 500 });
   }
 }
