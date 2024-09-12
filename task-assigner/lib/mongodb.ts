@@ -6,14 +6,18 @@ if (!MONGODB_URI) {
   throw new Error('Please define the MONGODB_URI environment variable inside .env.local');
 }
 
+// Extend the global namespace to include mongoose-related properties
 declare global {
-  var mongoose: { conn: mongoose.Mongoose | null; promise: Promise<mongoose.Mongoose> | null };
+  var mongoose: {
+    conn: mongoose.Mongoose | null;
+    promise: Promise<mongoose.Mongoose> | null;
+  };
 }
 
-let cached = global.mongoose;
+let cached = globalThis.mongoose; // Use globalThis for compatibility across environments
 
 if (!cached) {
-  cached = global.mongoose = { conn: null, promise: null };
+  cached = globalThis.mongoose = { conn: null, promise: null };
 }
 
 export async function connectToDatabase() {

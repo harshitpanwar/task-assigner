@@ -66,7 +66,7 @@ export default function SignupPage() {
         >
           <option value="">Select Role</option>
           <option value="project manager">Project Manager</option>
-          <option value="annotater">Annotater</option>
+          <option value="annotator">Annotater</option>
         </select>
 
         <button className="w-full bg-green-500 text-white p-2 rounded" type="submit">

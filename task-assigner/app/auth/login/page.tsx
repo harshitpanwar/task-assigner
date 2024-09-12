@@ -50,7 +50,7 @@ export default function LoginPage() {
       </form>
       {error && <p className="mt-3 text-red-500">{error}</p>}
       <p className="mt-4">
-        Don't have an account? <Link href="/auth/signup" className="text-blue-500 hover:underline">Sign up</Link>
+        Don&apos;t have an account? <Link href="/auth/signup" className="text-blue-500 hover:underline">Sign up</Link>
       </p>
     </div>
   );

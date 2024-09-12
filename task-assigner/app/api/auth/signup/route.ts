@@ -29,6 +29,6 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ message: 'User created successfully' }, { status: 201 });
   } catch (error: any) {
-    return NextResponse.json({ error: String(error.message) || 'Something went wrong' }, { status: 500 });
+    return NextResponse.json({ error: error.message || 'Something went wrong' }, { status: 500 });
   }
 }

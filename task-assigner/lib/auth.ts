@@ -1,8 +1,14 @@
-import NextAuth, { AuthOptions } from 'next-auth';
+import { AuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { connectToDatabase } from './mongodb';
-import { User } from '../models/User';
+import { User as UserModel } from '../models/User';
 import bcrypt from 'bcryptjs';
+
+// Define types for token and session
+interface JWTToken {
+  id?: string;
+  role?: string;
+}
 
 export const authOptions: AuthOptions = {
   session: {
@@ -18,7 +24,7 @@ export const authOptions: AuthOptions = {
       async authorize(credentials) {
         await connectToDatabase();
 
-        const user = await User.findOne({ email: credentials?.email });
+        const user = await UserModel.findOne({ email: credentials?.email });
         if (!user) {
           throw new Error('No user found with the email');
         }
@@ -33,7 +39,7 @@ export const authOptions: AuthOptions = {
         }
 
         return {
-          id: user._id,
+          id: user._id.toString(),
           name: user.name,
           email: user.email,
           role: user.role,
@@ -42,17 +48,17 @@ export const authOptions: AuthOptions = {
     }),
   ],
   callbacks: {
-    async jwt({ token, user }: { token: any; user?: any }) {
+    async jwt({ token, user }) {
       if (user) {
-        token.id = user.id;
-        token.role = user.role;
+        (token as JWTToken).id = user.id;
+        (token as JWTToken).role = user.role;
       }
       return token;
     },
-    async session({ session, token }: { session: any; token: any }) {
+    async session({ session, token }) {
       if (token) {
-        session.user.id = token.id;
-        session.user.role = token.role;
+        (session.user as any).id = (token as JWTToken).id as string;
+        (session.user as any).role = (token as JWTToken).role;
       }
       return session;
     },
