@@ -3,8 +3,8 @@ import mongoose from 'mongoose';
 const taskSchema = new mongoose.Schema({
   name: { type: String, required: true },
   type: { type: String, enum: ['text', 'audio', 'video', 'image'], required: true },
-  question: { type: Object, required: true }, // Store question and options
-  media_uri: { type: [String], required: false },
+  question: { type: Object, required: true },
+  media_uri: { type: String, required: false },
   project: { type: mongoose.Schema.Types.ObjectId, ref: 'Project', required: true },
   annotator: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   answer_type: { type: String, enum: ['text_field', 'checkbox_single', 'checkbox_multiple'], required: true },
