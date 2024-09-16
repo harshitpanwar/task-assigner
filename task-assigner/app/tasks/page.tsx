@@ -102,8 +102,8 @@ type Task = {
       {tasks.length > 0 ? (
         <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
           {tasks.map((task) => (
-            <div className="flex flex-col justify-between border p-4 rounded shadow-md">
-                <div key={task._id} className="flex flex-col justify-between">
+            <div  key={task._id} className="flex flex-col justify-between border p-4 rounded shadow-md">
+                <div className="flex flex-col justify-between">
                 <h3 className="text-lg font-semibold">{task.name}</h3>
                 <p>Type: {task.type}</p>
                 
@@ -162,7 +162,7 @@ type Task = {
             <div className="flex flex-row justify-center mt-2">
                 <button className="bg-green-500 text-white px-2 py-1 rounded" onClick={()=> {updateAnswer(task._id)}}>Update</button>
             </div>
-        </div>
+            </div>
           ))}
         </div>
       ) : (
