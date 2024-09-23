@@ -1,3 +1,5 @@
+'use client'
+
 import { EditorElement } from '@/providers/editor/editor-provider'
 import React from 'react'
 import TextComponent from './text'
