@@ -2,9 +2,9 @@ import { EditorBtns } from '@/lib/constants'
 import { ListTodo } from 'lucide-react'
 import React from 'react'
 
-type Props = {}
+// type Props = {}
 
-const RadioBtnPlaceholder = (props: Props) => {
+const RadioBtnPlaceholder = () => {
   const handleDragState = (e: React.DragEvent, type: EditorBtns) => {
     if (type === null) return
     e.dataTransfer.setData('componentType', type)

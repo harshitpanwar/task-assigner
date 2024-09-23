@@ -16,9 +16,9 @@ import {
   import RadioBtnPlaceholder from './radio-button-placeholder'
 import AudioPlaceholder from './audio-placeholder'
   
-  type Props = {}
+  // type Props = {}
   
-  const ComponentsTab = (props: Props) => {
+  const ComponentsTab = () => {
     const elements: {
       Component: React.ReactNode
       label: string

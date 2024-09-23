@@ -3,9 +3,9 @@ import { Youtube } from 'lucide-react'
 import Image from 'next/image'
 import React from 'react'
 
-type Props = {}
+// type Props = {}
 
-const CheckoutPlaceholder = (props: Props) => {
+const CheckoutPlaceholder = () => {
   const handleDragStart = (e: React.DragEvent, type: EditorBtns) => {
     if (type === null) return
     e.dataTransfer.setData('componentType', type)

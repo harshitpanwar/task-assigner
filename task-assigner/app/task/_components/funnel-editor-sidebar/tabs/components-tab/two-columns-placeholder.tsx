@@ -2,9 +2,9 @@
 import { EditorBtns } from '@/lib/constants'
 import React from 'react'
 
-type Props = {}
+// type Props = {}
 
-const TwoColumnsPlaceholder = (props: Props) => {
+const TwoColumnsPlaceholder = () => {
   const handleDragStart = (e: React.DragEvent, type: EditorBtns) => {
     if (type === null) return
     e.dataTransfer.setData('componentType', type)

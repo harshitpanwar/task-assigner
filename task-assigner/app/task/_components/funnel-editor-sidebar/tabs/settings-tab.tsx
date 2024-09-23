@@ -36,9 +36,9 @@ import {
 import { useEditor } from '@/providers/editor/editor-provider'
 import { Slider } from '@/components/ui/slider'
 
-type Props = {}
+// type Props = {}
 
-const SettingsTab = (props: Props) => {
+const SettingsTab = () => {
   const { state, dispatch } = useEditor()
 
   const handleOnChanges = (e: any) => {
