@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import TaskForm from "@/components/TaskForm";
 import { usePathname } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 
 type User = {
@@ -40,7 +41,7 @@ type Task = {
     const [tasks, setTasks] = useState<Task[]>([]);
     const [showForm, setShowForm] = useState(false);
     const [annotators, setAnnotators] = useState<User[]>([]);
-  
+    const router = useRouter();
     const fetchTasks = async () => {
       try {
         const res = await fetch(`/api/tasks?projectId=${projectId}`);
@@ -85,7 +86,7 @@ type Task = {
     <div className="p-6">
       <p className="text-2xl font-bold">Tasks for Project {tasks?.[0]?.project?.name}</p>
       <button
-        onClick={() => setShowForm(true)}
+        onClick={() => router.push(`/task/${projectId}`)}
         className="bg-blue-500 text-white px-4 py-2 rounded mt-4"
       >
         Create Task
@@ -94,7 +95,7 @@ type Task = {
       {tasks.length > 0 ? (
         <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
           {tasks.map((task) => (
-            <div key={task._id} className="border p-4 rounded shadow-md">
+            <div key={task._id} className="border p-4 rounded shadow-md hover:cursor-pointer" onClick={()=> {router.push(`/view-task/${projectId}/${task._id}`)}}>
               <h3 className="text-lg font-semibold">{task.name}</h3>
               <p>Type: {task.type}</p>
             

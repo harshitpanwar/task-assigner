@@ -19,19 +19,19 @@ export async function GET(req: Request) {
     await connectToDatabase();
     let tasks;
     if(userRole === "annotator") {
-      tasks = await Task.find({ annotator: session.user.id }).populate("annotator project");
+      tasks = await Task.find({ annotator: session.user.id }).populate("annotator");
     }
     else {
-      tasks = await Task.find({ project: projectId }).populate("annotator project");
+      tasks = await Task.find({ project: projectId }).populate("annotator");
     }
     return new Response(JSON.stringify({ tasks }), { status: 200 });
-  } catch (error) {
-    return new Response("Failed to fetch tasks", { status: 500 });
+  } catch (error: any) {
+    return new Response(error.message, { status: 500 });
   }
 }
 
 export async function POST(req: Request) {
-    const { name, type, question, media_uri, project, answer_type, annotator } = await req.json();
+    const { name, type, question, media_uri, project, annotator, answer_type } = await req.json();
   
     try {
       await connectToDatabase();
