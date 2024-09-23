@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
+import Loader from '@/components/Loader/Loader';
 
 interface Project {
   _id: string;
@@ -12,18 +14,29 @@ const Dashboard = () => {
   const [projects, setProjects] = useState<Project[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [newProjectName, setNewProjectName] = useState('');
+  const [loading, setLoading] = useState(false);
   const { data: session } = useSession();
+  const router = useRouter();
 
   useEffect(() => {
-    if (session) {
-      fetch('/api/projects')
-        .then((res) => res.json())
-        .then((data) => {
-          if (data.success) {
-            setProjects(data.projects);
-          }
-        })
-        .catch((error) => console.error('Error fetching projects:', error));
+
+    try {
+      setLoading(true);
+      if (session) {
+        fetch('/api/projects')
+          .then((res) => res.json())
+          .then((data) => {
+            if (data.success) {
+              setProjects(data.projects);
+            }
+          })
+          .catch((error) => console.error('Error fetching projects:', error));
+      }
+  
+    } catch (error) {
+      console.error('Error fetching projects:', error);
+    } finally {
+      setLoading(false);
     }
   }, [session]);
 
@@ -46,48 +59,59 @@ const Dashboard = () => {
       .catch((error) => console.error('Error creating project:', error));
   };
 
+  const handleProjectClick = (projectId: string) => {
+    router.push(`/projects/${projectId}/tasks`);
+  };
+
+  if (!session) {
+    return <Loader />;
+  }
+
+  if (session.user.role === 'annotator') router.push('/tasks');
+
   return (
     <div>
       <header className="bg-blue-600 text-white py-4 px-6 shadow-md">
         <div className="container mx-auto flex flex-col md:flex-row items-center justify-between">
           <h1 className="text-2xl font-bold mb-2 md:mb-0">Dashboard</h1>
           <p className="text-lg mb-2 md:mb-0">Logged in as: {session?.user?.email}</p>
-          <a 
-            href="/api/auth/signout" 
+          <a
+            href="/api/auth/signout"
             className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-red-600 transition"
           >
             Logout
           </a>
         </div>
       </header>
+      {session?.user?.role === 'project manager' ? (
+        <div className="container mx-auto p-4">
+          <button
+            className="bg-blue-500 text-white px-4 py-2 rounded mb-4"
+            onClick={() => setShowModal(true)}
+          >
+            Create Project
+          </button>
 
-    { session?.user?.role === 'project manager'? (
-      <div className="container mx-auto p-4">
-
-        <button
-          className="bg-blue-500 text-white px-4 py-2 rounded mb-4"
-          onClick={() => setShowModal(true)}
-        >
-          Create Project
-        </button>
-
-        <div className="grid grid-cols-1 gap-4">
-          {projects.length === 0 ? (
-            <p>No projects found.</p>
-          ) : (
-            projects.map((project) => (
-              <div key={project._id} className="border p-4 rounded shadow">
-                <h2 className="text-xl">{project.name}</h2>
-              </div>
-            ))
-          )}
+          <div className="grid grid-cols-1 gap-4">
+            {projects.length === 0 ? (
+              <p>No projects found.</p>
+            ) : (
+              projects.map((project) => (
+                <div
+                  key={project._id}
+                  className="border p-4 rounded shadow cursor-pointer hover:bg-gray-100 transition"
+                  onClick={() => handleProjectClick(project._id)} // Add onClick event
+                >
+                  <h2 className="text-xl">{project.name}</h2>
+                </div>
+              ))
+            )}
+          </div>
         </div>
-      </div>
-    ) : (
-      <div className="container mx-auto p-4">
-        <p>Annotator Dashboard</ p>
-      </div>
-    )}
+      ) : (
+        // redirect to tasks page
+        null
+      )}
 
       {showModal && (
         <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center">
